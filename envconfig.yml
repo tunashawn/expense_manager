@@ -1,0 +1,4 @@
+JWT_SECRET_KEY: "abcdexgh"
+JWT_TOKEN_EXPIRE_TIME: "5"
+MONGODB_CONNECTION_URI: "mongodb://localhost:27017/"
+MONGODB_DATABASE_NAME: "expense_manager"
