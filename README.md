@@ -16,3 +16,4 @@ A fun project to manage multiple user's income and expense, aimed to be a free t
   - [ ] modify wallets
   - [ ] list transactions
   - [ ] wallet statistics
+  - [ ] tools

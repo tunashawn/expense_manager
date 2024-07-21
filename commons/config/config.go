@@ -15,6 +15,10 @@ type MongoDBConfig struct {
 	DatabaseName  string `envconfig:"MONGODB_DATABASE_NAME" required:"true"`
 }
 
+type MySQLConfig struct {
+	ConnectionString string `envconfig:"MYSQL_CONNECTION_STRING" required:"true"`
+}
+
 func GetConfig(cfg any) error {
 	err := envconfig.Process("", cfg)
 	if err != nil {
