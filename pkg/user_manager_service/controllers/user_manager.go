@@ -8,30 +8,36 @@ import (
 	"github.com/pkg/errors"
 )
 
-type UserManager interface {
+type UserManagerController interface {
 	CreateNewUser(ctx *gin.Context)
 	ChangePassword(ctx *gin.Context)
+	VerifyUserPermission(ctx *gin.Context)
 }
 
-type UserManagerImpl struct {
+type UserManagerControllerImpl struct {
 	response           response.HttpResponse
 	userManagerService services.UserManagerService
 	auth               services2.AuthService
 }
 
-func NewUserManager() (UserManager, error) {
+func (u *UserManagerControllerImpl) VerifyUserPermission(ctx *gin.Context) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func NewUserManagerController() (UserManagerController, error) {
 	userManagerService, err := services.NewUserManagerService()
 	if err != nil {
 		return nil, err
 	}
 
-	return &UserManagerImpl{
+	return &UserManagerControllerImpl{
 		userManagerService: userManagerService,
 		auth:               &services2.AuthServiceImpl{},
 	}, nil
 }
 
-func (u *UserManagerImpl) ChangePassword(ctx *gin.Context) {
+func (u *UserManagerControllerImpl) ChangePassword(ctx *gin.Context) {
 	credential, err := u.auth.GetCredentialFromToken(ctx)
 	if err != nil {
 		u.response.InternalServerError(errors.Wrap(err, "could not get credential from auth token"), ctx)
@@ -53,7 +59,7 @@ func (u *UserManagerImpl) ChangePassword(ctx *gin.Context) {
 	u.response.Success(nil, ctx)
 }
 
-func (u *UserManagerImpl) CreateNewUser(ctx *gin.Context) {
+func (u *UserManagerControllerImpl) CreateNewUser(ctx *gin.Context) {
 	user, err := u.userManagerService.GetNewUserInformation(ctx)
 	if err != nil {
 		u.response.BadRequest(err, ctx)

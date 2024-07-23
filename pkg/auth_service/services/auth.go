@@ -5,6 +5,7 @@ import (
 	"Expense_Manager/commons/response"
 	"Expense_Manager/pkg/auth_service/models"
 	"Expense_Manager/pkg/auth_service/repository"
+	"database/sql"
 	"encoding/base64"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -27,7 +28,7 @@ type AuthServiceImpl struct {
 	secretKey       []byte
 	tokenExpireTime int
 	response        response.HttpResponse
-	mongo           repository.AuthServiceMongoRepo
+	mongo           repository.AuthServiceMySQLRepo
 }
 
 func NewAuthService() (*AuthServiceImpl, error) {
@@ -37,7 +38,7 @@ func NewAuthService() (*AuthServiceImpl, error) {
 		return nil, errors.Wrap(err, "could not get auth config")
 	}
 
-	mongo, err := repository.NewAuthServiceMongoRepository()
+	mongo, err := repository.NewAuthServiceMySQLRepository()
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create auth service mongo repository")
 	}
@@ -151,7 +152,10 @@ func (a *AuthServiceImpl) VerifyToken(ctx *gin.Context) (bool, error) {
 func (a *AuthServiceImpl) VerifyCredential(credential models.Credential) (bool, error) {
 	hashedPassword, err := a.mongo.GetHashedPasswordOfUser(credential.Username)
 	if err != nil {
-		return false, errors.Wrap(err, "could not get hashed password of user")
+		if !errors.Is(err, sql.ErrNoRows) {
+			return false, errors.Wrap(err, "could not get hashed password of user")
+		}
+		return false, nil
 	}
 
 	err = bcrypt.CompareHashAndPassword(hashedPassword, []byte(credential.Password))

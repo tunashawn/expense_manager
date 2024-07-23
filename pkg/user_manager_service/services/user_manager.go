@@ -25,20 +25,20 @@ type UserManagerService interface {
 }
 
 type UserManagerServiceImpl struct {
-	mongo repositories.UserManagerRepo
+	mysql repositories.UserManagerMySQLRepo
 }
 
 func NewUserManagerService() (UserManagerService, error) {
-	mongo, err := repositories.NewUserManagerRepository()
+	mongo, err := repositories.NewUserManagerMySQLRepo()
 	if err != nil {
 		return nil, err
 	}
 
-	return &UserManagerServiceImpl{mongo: mongo}, nil
+	return &UserManagerServiceImpl{mysql: mongo}, nil
 }
 
 func (u *UserManagerServiceImpl) UpdateUserPassword(username string, password []byte) error {
-	err := u.mongo.UpdateUserPassword(username, password)
+	err := u.mysql.UpdateUserPassword(username, password)
 	if err != nil {
 		return errors.Wrap(err, "could not perform update user's password")
 	}
@@ -53,7 +53,7 @@ func (u *UserManagerServiceImpl) GetNewPassword(ctx *gin.Context) ([]byte, error
 		return nil, err
 	}
 
-	newPassword := user.NewPassword
+	newPassword := user.Password
 
 	if err := u.validatePassword(newPassword); err != nil {
 		return nil, err
@@ -113,7 +113,7 @@ func (u *UserManagerServiceImpl) validateUsername(username string) (bool, error)
 	}
 
 	// check if username already existed
-	exist, err := u.mongo.IsUsernameExist(username)
+	exist, err := u.mysql.IsUsernameExist(username)
 	if err != nil {
 		return true, errors.Wrap(err, "could not check username extinction")
 	}
@@ -147,7 +147,7 @@ func (u *UserManagerServiceImpl) validateEmail(email string) (bool, error) {
 	}
 
 	// check if username already existed
-	exist, err := u.mongo.IsEmailExist(email)
+	exist, err := u.mysql.IsEmailExist(email)
 	if err != nil {
 		return true, errors.Wrap(err, "could not check username extinction")
 	}
@@ -159,5 +159,5 @@ func (u *UserManagerServiceImpl) validateEmail(email string) (bool, error) {
 }
 
 func (u *UserManagerServiceImpl) CreateNewUser(user models.User) error {
-	return u.mongo.CreateNewUser(user)
+	return u.mysql.CreateNewUser(user)
 }

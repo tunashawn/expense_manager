@@ -6,13 +6,12 @@ import (
 )
 
 type User struct {
+	ID             int    `json:"id" bun:"id,pk"`
 	Username       string `json:"username"`
-	Password       string `json:"password,omitempty" bson:"-"`
-	NewPassword    string `json:"new_password,omitempty" bson:"-"`
-	HashedPassword []byte `json:"hashed_password,omitempty" bson:"password"`
+	Password       string `json:"password,omitempty" bun:"-"`
+	HashedPassword []byte `json:"hashed_password,omitempty" bun:"password"`
 	FullName       string `json:"full_name"`
 	Email          string `json:"email"`
-	Active         bool   `json:"active"`
 }
 
 // Formats the current user information to save to database, hash and salt the user password
@@ -23,7 +22,6 @@ func (u *User) FormatNewUserInformation() error {
 	}
 
 	u.HashedPassword = hashedPassword
-	u.Active = true
 
 	return nil
 }
