@@ -11,9 +11,18 @@ A fun project to manage multiple user's income and expense, aimed to be a free t
   - [x] create user
   - [x] change password
   - [ ] change email
+  - [ ] verify permission
+
 * **Wallet Manager**:
-  - [ ] create wallets
-  - [ ] modify wallets
-  - [ ] list transactions
-  - [ ] wallet statistics
+  - [x] create wallets
+  - [x] get wallet
+  - [ ] get wallet list
+  - [x] edit wallet
+  - [x] delete wallet
+  - [x] create transaction
+  - [x] get transaction
+  - [ ] list transaction list
+  - [x] edit transaction
+  - [x] delete transactions
+  - [ ] reports
   - [ ] tools
