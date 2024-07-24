@@ -1,0 +1,21 @@
+version: '1'
+services:
+  wallet_service:
+    env_file:
+      - "envconfig.yml"
+    build:
+      context: .
+      args:
+        SERVICE_NAME: wallet_service
+    ports:
+      - "8081:8080"
+
+  user_manager_service:
+    env_file:
+      - "envconfig.yml"
+    build:
+      context: .
+      args:
+        SERVICE_NAME: user_manager_service
+    ports:
+      - "8082:8080"
